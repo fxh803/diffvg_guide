@@ -2,6 +2,7 @@
 
 本文档以 `simple_collage` 为例，展示如何用 DiffVG 实现**可微分矢量拼贴优化**：将多个 SVG 图形自动排布到指定容器区域，通过梯度下降优化其位置、旋转和缩放。
 
+![Collage 效果图](example1.png)
 ---
 
 ## 1. 流程概览
@@ -139,7 +140,7 @@ raw_control_points_tensor = get_raw_control_points(shapes, centroids, device)
 raw_control_points_tensor.requires_grad = False  # 轮廓本身不优化
 ```
 
-### 3.3 基于网格的初始位置采样
+### 3.3 基于网格的位置初始化
 
 在容器轮廓内部用网格采样得到初始放置位置：
 
@@ -301,21 +302,6 @@ for i in range(mark_num):
         # ... 收集 shapes1, shape_groups1 ...
 
 pydiffvg.save_svg(f"{output_dir}/final/final_result.svg", render_size, render_size, shapes1, shape_groups1)
-```
-
-### 6.3 目标图像与掩码
-
-目标图和掩码来自容器二值图，黑色区域为期望填充区：
-
-```python
-def mask2targetimg(mask_dir, device, img_size=1000, is_binary=True):
-    image = Image.open(mask_dir).convert("L").resize([img_size, img_size])
-    # 二值化：黑(0) / 白(255)
-    # mask: 白色区域为 1
-    binary_image = np.array(image) > 128
-    mask_img = torch.tensor(binary_image.astype(int), device=device, dtype=torch.float32)
-    target_img = transforms.ToTensor()(rgb_image).to(device)
-    return target_img, mask_img
 ```
 
 ---
