@@ -3,6 +3,34 @@
 本文档以 `simple_collage` 为例，展示如何用 DiffVG 实现**可微分矢量拼贴优化**：将多个 SVG 图形自动排布到指定容器区域，通过梯度下降优化其位置、旋转和缩放。
 
 ![Collage 效果图](example1.png)
+
+### 项目 Demo 目录
+
+在 `simple_collage/` 下运行，目录结构如下：
+
+```
+simple_collage/
+├── collage.py          # 主入口，布局优化
+├── outline_svg.py      # 轮廓提取
+├── utils/
+│   ├── image_process.py
+│   └── svg_process.py
+├── primitive/
+│   ├── images/         # 输入：原始 primitive SVG
+│   └── outline_files/  # outline_svg运行后输出：outline_*.svg、uniform_*.svg、*.json
+├── container.png       # 输入：容器二值图（黑=填充区，白=背景）
+└── output/             # main 输出
+    ├── iterations/     # 每轮迭代的 SVG 与栅格图
+    └── final/          # 最终结果 final_result.svg
+```
+
+运行
+
+```
+cd simple_collage
+python collage.py
+```
+
 ---
 
 ## 1. 流程概览
