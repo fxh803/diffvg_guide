@@ -229,7 +229,7 @@ def outline_svg(device):
             pbar.update(1)
             pbar.set_description(f"Number of primitives:{len(primitive_files)}")
 
-if __name__ == '__main__':
-    device = torch.device("cuda:0")
-    init_diffvg(device)
-    outline_svg(device)
+# if __name__ == '__main__':
+#     device = torch.device("cuda:0")
+#     init_diffvg(device)
+#     outline_svg(device)

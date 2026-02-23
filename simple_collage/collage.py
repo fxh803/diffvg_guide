@@ -8,13 +8,9 @@ from outline_svg import outline_svg
 import json
 from utils.image_process import mask2targetimg,svg_to_img
 from torchvision.transforms import ToPILImage
+from utils.svg_process import init_diffvg
 # ==================== 核心函数 ====================
 
-def init_diffvg(device):
-    """初始化diffvg"""
-    pydiffvg.set_device(device)
-    pydiffvg.set_use_gpu(torch.cuda.is_available())
- 
 def get_raw_control_points(shapes, centroids, device):
     """获取原始控制点（减去质心）"""
     raw_points_list = []
@@ -40,14 +36,13 @@ def exclude_loss(raster_img, scale=1):
     return torch.sum(img) * scale
 
 
-def grid_based_sampling(contour, num_points, canvas_width, canvas_height, shrink_distance=10):
+def grid_based_sampling(contour, num_points, canvas_width, canvas_height):
     """
     基于网格的采样，通过收缩轮廓避免点在边缘初始化
     
     Args:
         contour: OpenCV轮廓
         num_points: 需要生成的点数
-        shrink_distance: 轮廓收缩距离（像素）
     
     Returns:
         生成的点列表
@@ -167,8 +162,7 @@ def main(outline_files, uniform_files, json_files, container_path, output_dir=".
         largest_contour, 
         num_points=mark_num, 
         canvas_width=render_size, 
-        canvas_height=render_size,
-        shrink_distance=10
+        canvas_height=render_size
     )
     
     # 转换为位置列表 [x, y]
